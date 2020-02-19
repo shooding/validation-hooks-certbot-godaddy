@@ -23,21 +23,22 @@ SUBDOMAIN=""
 # Detection of root domain or subdomain
 if [ "$(uname -s)" == "Darwin" ]
 then
+  # macOS
   DOMAIN=$(expr "$CERTBOT_DOMAIN" : '.*\.\(.*\..*\)')
   if [[ ! -z "${DOMAIN// }" ]]
   then
-    log "SUBDOMAIN DETECTED"
-    SUBDOMAIN=$(echo "$CERTBOT_DOMAIN" | awk -F"." '{print $1}')
+    log "SUBDOMAIN DETECTED"    
+    SUBDOMAIN=$(echo "$CERTBOT_DOMAIN" | awk -F".$DOMAIN" '{print $1}')
   else
     DOMAIN=$CERTBOT_DOMAIN
   fi
 else
+  # linux
   DOMAIN=$(expr match "$CERTBOT_DOMAIN" '.*\.\(.*\..*\)')
   if [[ ! -z "${DOMAIN// }" ]]
   then
-    log "SUBDOMAIN DETECTED"
-    SUBDOMAIN=$(echo "$CERTBOT_DOMAIN" | sed "s/.$DOMAIN//")
-    DOMAIN=$CERTBOT_DOMAIN
+    log "SUBDOMAIN DETECTED"    
+    SUBDOMAIN=$(echo "$CERTBOT_DOMAIN" | sed "s/.$DOMAIN//")    
   else
     DOMAIN=$CERTBOT_DOMAIN
   fi
